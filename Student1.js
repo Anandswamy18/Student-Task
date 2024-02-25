@@ -229,7 +229,16 @@ function takeTest() {
 
             
             studentList[i].test_score.push(...subjectObject);
+
+            let totalMarks = mathMarks + scienceMarks + physicsMarks;
+            let averageMarks = ((totalMarks / 300) * 100).toFixed(2);
+
+            
+            studentList[i].totalMarks = totalMarks;
+            studentList[i].averageMarks = averageMarks;
+            
         }
+       
     }
 
     
@@ -245,7 +254,10 @@ function generateResult() {
         let averageMarks = totalMarks / totalSubjects;
         studentList[i].totalMarks = totalMarks;
         studentList[i].averageMarks = averageMarks.toFixed(2);
+        
+
     }
+ 
 }
 
 
