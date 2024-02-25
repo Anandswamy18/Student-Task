@@ -183,7 +183,7 @@ const Table = require('cli-table3');
 let condition = true;
 
 while (condition) {
-    let userInput = readline.question("select one of these statement:\n 1. Take Test\n 2. Generate Result\n 3. View Student Result \n ")
+    let userInput = readline.question("select one of these statement:\n 1. Take Test\n 2. Generate Result\n 3. View Student Result \n 4. display class wise result \n")
     if (userInput == 1) {
         takeTest();
         
@@ -195,6 +195,10 @@ while (condition) {
 
     if (userInput == 3) {
         viewStudentsResult();
+    }
+
+    if (userInput == 4) {
+        viewClasswiseResult();
     }
 
    
@@ -275,3 +279,31 @@ function viewStudentsResult() {
 
 
 
+
+function viewClasswiseResult() {
+    console.log("Classwise Results:");
+    let classResults = {};
+
+    studentList.map(student => {
+        if (!classResults[student.Class]) {
+            classResults[student.Class] = [];
+        }
+        classResults[student.Class].push(student);
+    });
+
+    for (let cls in classResults) {
+        console.log(`Class ${cls} Results:`);
+        let table = new Table({
+            head: ['Roll No', 'Name', 'Total Marks', 'Average Marks']
+        });
+        classResults[cls].forEach(student => {
+            table.push([
+                student.Roll_no,
+                student.Name,
+                student.totalMarks,
+                student.averageMarks
+            ]);
+        });
+        console.log(table.toString());
+    }
+}
