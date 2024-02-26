@@ -183,7 +183,7 @@ const Table = require('cli-table3');
 let condition = true;
 
 while (condition) {
-    let userInput = readline.question("select one of these statement:\n 1. Take Test\n 2. Generate Result\n 3. View Student Result \n 4. display class wise result \n")
+    let userInput = readline.question("select one of these statement:\n 1. Take Test\n 2. Generate Result\n 3. View Student Result \n 4. display class wise result \n 5. Details Analysis of Result \n")
     if (userInput == 1) {
         takeTest();
         
@@ -199,6 +199,10 @@ while (condition) {
 
     if (userInput == 4) {
         viewClasswiseResult();
+    }
+
+    if (userInput == 5) {
+        detailAnalysisOfResult();
     }
 
    
@@ -318,4 +322,77 @@ function viewClasswiseResult() {
         });
         console.log(table.toString());
     }
+}
+
+
+
+function detailAnalysisOfResult() {
+    let classDetails = {};
+
+    
+    studentList.forEach(student => {
+        if (!classDetails[student.Class]) {
+            classDetails[student.Class] = {
+                totalStudents: 0,
+                totalMarksSum: 0,
+                percentageSum: 0,
+                failedStudentsCount: 0,
+                passedStudentsCount: 0
+            };
+        }
+
+        classDetails[student.Class].totalStudents++;
+        classDetails[student.Class].totalMarksSum += student.totalMarks;
+        classDetails[student.Class].percentageSum += parseFloat(student.percentage) || 0;
+
+        if (student.percentage < 40) {
+            classDetails[student.Class].failedStudentsCount++;
+        } else {
+            classDetails[student.Class].passedStudentsCount++;
+        }
+    });
+
+
+    for (let cls in classDetails) {
+        let classData = classDetails[cls];
+        classData.averageTotalMarks = (classData.totalMarksSum / classData.totalStudents).toFixed(2);
+        classData.averagePercentage = classData.totalStudents ? (classData.percentageSum / classData.totalStudents).toFixed(2) : 0;
+        classData.failedStudentsPercentage = ((classData.failedStudentsCount / classData.totalStudents) * 100).toFixed(2);
+        classData.passedStudentsPercentage = ((classData.passedStudentsCount / classData.totalStudents) * 100).toFixed(2);
+
+      
+        if (classData.averagePercentage >= 80) {
+            classData.overallGrade = 'A';
+        } else if (classData.averagePercentage >= 60) {
+            classData.overallGrade = 'B';
+        } else if (classData.averagePercentage >= 40) {
+            classData.overallGrade = 'C';
+        } else {
+            classData.overallGrade = 'D';
+        }
+    }
+
+ 
+    let table = new Table({
+        head: ['Class', 'Total Students Count', 'Average Total Marks', 'Average Percentage', 'Overall Grade', 'Failed Students Count', 'Failed Students Percentage', 'Passed Students Count', 'Passed Students Percentage']
+    });
+
+  
+    for (let cls in classDetails) {
+        let classData = classDetails[cls];
+        table.push([
+            cls,
+            classData.totalStudents,
+            classData.averageTotalMarks,
+            classData.averagePercentage,
+            classData.overallGrade,
+            classData.failedStudentsCount,
+            classData.failedStudentsPercentage + '%',
+            classData.passedStudentsCount,
+            classData.passedStudentsPercentage + '%'
+        ]);
+    }
+
+    // Display the table
+    console.log(table.toString());
 }
