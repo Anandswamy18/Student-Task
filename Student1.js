@@ -401,9 +401,13 @@ function detailAnalysisOfResult() {
     console.log(table.toString());
 }
 
+
 function viewTopPerformers() {
     let topPerformers = {};
-
+    let table = new Table({
+        head: ['Class', 'Top Performers'],
+        colWidths: [10, 40]
+    });
 
     studentList.forEach(student => {
         if (!topPerformers[student.Class]) {
@@ -412,17 +416,16 @@ function viewTopPerformers() {
         topPerformers[student.Class].push(student);
     });
 
-    
     for (let cls in topPerformers) {
         topPerformers[cls].sort((a, b) => b.totalMarks - a.totalMarks);
         topPerformers[cls] = topPerformers[cls].slice(0, 3); 
     }
 
-
-    console.log("Class | Top Performers");
     for (let cls in topPerformers) {
         let topThree = topPerformers[cls].map(student => student.Name).join(", ");
-        console.log(`${cls} | ${topThree}`);
+        table.push([cls, topThree]);
     }
+
+    console.log(table.toString());
 }
 
