@@ -183,7 +183,7 @@ const Table = require('cli-table3');
 let condition = true;
 
 while (condition) {
-    let userInput = readline.question("select one of these statement:\n 1. Take Test\n 2. Generate Result\n 3. View Student Result \n 4. display class wise result \n 5. Details Analysis of Result \n")
+    let userInput = readline.question("select one of these statement:\n 1. Take Test\n 2. Generate Result\n 3. View Student Result \n 4. display class wise result \n 5. Details Analysis of Result \n 6. View Top Performer \n")
     if (userInput == 1) {
         takeTest();
         
@@ -203,6 +203,10 @@ while (condition) {
 
     if (userInput == 5) {
         detailAnalysisOfResult();
+    }
+
+    if (userInput == 6) {
+        viewTopPerformers();
     }
 
    
@@ -393,6 +397,32 @@ function detailAnalysisOfResult() {
         ]);
     }
 
-    // Display the table
+    
     console.log(table.toString());
 }
+
+function viewTopPerformers() {
+    let topPerformers = {};
+
+
+    studentList.forEach(student => {
+        if (!topPerformers[student.Class]) {
+            topPerformers[student.Class] = [];
+        }
+        topPerformers[student.Class].push(student);
+    });
+
+    
+    for (let cls in topPerformers) {
+        topPerformers[cls].sort((a, b) => b.totalMarks - a.totalMarks);
+        topPerformers[cls] = topPerformers[cls].slice(0, 3); 
+    }
+
+
+    console.log("Class | Top Performers");
+    for (let cls in topPerformers) {
+        let topThree = topPerformers[cls].map(student => student.Name).join(", ");
+        console.log(`${cls} | ${topThree}`);
+    }
+}
+
